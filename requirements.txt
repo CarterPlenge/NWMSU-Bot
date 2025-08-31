@@ -1,0 +1,3 @@
+interactions.py
+python-dotenv
+mysql-connector-python

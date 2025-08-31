@@ -1,6 +1,9 @@
 import os
 from dotenv import load_dotenv
 
+import json
+from pathlib import Path
+
 import interactions
 from interactions import slash_command, SlashContext, OptionType, slash_option, listen, ModalContext, User, \
     SlashCommandChoice
@@ -45,13 +48,65 @@ async def ping(ctx: SlashContext):
 )
 async def about(ctx: SlashContext):
     await ctx.send(f"Created by Connor Midgley.\n"
-                   "Source code available at https://github.com/GameMagma/NewNakamoto \n"
+                   "Source code available at https://github.com/GameMagma/NWMSU-Bot \n"
                    f"Version {_VERSION}\n\n"
 
-                   "New features for 0.1.0:\n"
-                   "It functions",
+                   f"New features for {_VERSION}:\n"
+                   "Request a game with /request\n",
                    ephemeral=True)
 
+
+@slash_command(
+    name="request",
+    description="Request a new game",
+    scopes=[os.getenv("TEST_GUILD_ID")]
+)
+@slash_option(
+    name="game",
+    description="The game you want to request.",
+    required=True,
+    opt_type=OptionType.STRING
+)
+@slash_option(
+    name="platform",
+    description="The platform the game is on.",
+    required=False,
+    opt_type=OptionType.STRING,
+    choices=[
+        SlashCommandChoice(name="PC", value="PC"),
+        SlashCommandChoice(name="PlayStation", value="PlayStation"),
+        SlashCommandChoice(name="Xbox", value="Xbox"),
+        SlashCommandChoice(name="Nintendo Switch", value="Nintendo Switch")
+    ]
+)
+async def request(ctx: SlashContext, game: str, platform: str = "N/A"):
+    """
+    Request a new game to be added to the esports library.
+
+    @param ctx: The context of the command
+    @param game: The game you want to request
+    @param platform: The platform the game is on
+    """
+
+    await ctx.defer()
+
+    file = Path("requests.json")
+    if file.exists():
+        with file.open("r") as f:
+            data = json.load(f)
+    else:
+        data = []
+
+    data.append({
+        "user_id": ctx.author.id,
+        "game": game,
+        "platform": platform
+    })
+
+    with file.open("w") as f:
+        json.dump(data, f, indent=4)
+
+    await ctx.send(f"Your request for {game} on {platform} has been received. Thank you!", ephemeral=True)
 
 @slash_command(
     name="dbtest",

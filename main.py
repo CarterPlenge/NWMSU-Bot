@@ -19,7 +19,7 @@ bot = interactions.Client(intents=interactions.Intents.ALL)
 # === GLOBALS ===
 # One day I'll integrate this into a place that uses less memory. Today is not that day, and neither is tomorrow
 database = SQLManager()  # Database connection
-_VERSION = "0.1.0"  # MAJOR.MINOR.PATCH
+_VERSION = "0.1.1"  # MAJOR.MINOR.PATCH
 
 # === EVENTS ===
 
@@ -88,8 +88,10 @@ async def request(ctx: SlashContext, game: str, platform: str = "N/A"):
     @param platform: The platform the game is on
     """
 
-    await ctx.defer()
+    # Buy some time (up to 15 minutes)
+    # await ctx.defer()
 
+    # Open requests.json and extract data into list
     file = Path("requests.json")
     if file.exists():
         with file.open("r") as f:
@@ -97,15 +99,18 @@ async def request(ctx: SlashContext, game: str, platform: str = "N/A"):
     else:
         data = []
 
+    # Append new request to list
     data.append({
         "user_id": ctx.author.id,
-        "game": game,
+        "game": game.strip().lower(),
         "platform": platform
     })
 
+    # Save the list back into requests.json
     with file.open("w") as f:
         json.dump(data, f, indent=4)
 
+    # Confirmation
     await ctx.send(f"Your request for {game} on {platform} has been received. Thank you!", ephemeral=True)
 
 @slash_command(

@@ -22,7 +22,7 @@ class SQLManager:
 
     def __init__(self):
         # self._connection = SQLConnection()
-        print("Establishing connection to Nakamoto database...")
+        print("Establishing connection to NWMSU Gaming database...")
 
         return  # don't connect (DEBUG)
 
@@ -30,7 +30,33 @@ class SQLManager:
                                            host=os.getenv("SQL_HOST"), port=os.getenv("SQL_PORT"),
                                            database=os.getenv("SQL_DATABASE"))
         self.cursor = self.cnx.cursor(buffered=True)  # This is used to interact with the actual database
+        print("Connection Verified.\n\n")
+
+        disconnect()
+
+
+    def connect(self) -> None:
+        """
+        Establishes a connection to the database
+        :return: None
+        """
+        self.cnx = mysql.connector.connect(user=os.getenv("SQL_USER"), password=os.getenv("SQL_PASSWORD"),
+                                           host=os.getenv("SQL_HOST"), port=os.getenv("SQL_PORT"),
+                                           database=os.getenv("SQL_DATABASE"))
+        self.cursor = self.cnx.cursor(buffered=True)  # This is used to interact with the actual database
         print("Connection Established.\n\n")
+
+
+    def disconnect(self) -> None:
+        """
+        Closes the connection to the database
+        :return: None
+        """
+
+        print("Closing DB Connection")
+        self.cursor.close()
+        self.cnx.close()
+        print("DB Connection Closed")
 
     def is_closed(self) -> bool:
         return self.cnx.is_connected()
@@ -58,6 +84,18 @@ class SQLManager:
             query_updateUser = "UPDATE users SET nickname = %s WHERE userID = %s"
             self.cursor.execute(query_updateUser, (str(user.username), str(user.id)))
             self.cnx.commit()
+
+    def test_connection(self):
+        query = "SELECT * FROM `game_request` WHERE 1"
+
+        self.connect()
+
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        print(result)
+
+        self.disconnect()
+
 
     def close(self):
         """Closes the connection"""

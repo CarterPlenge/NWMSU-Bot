@@ -19,7 +19,7 @@ bot = interactions.Client(intents=interactions.Intents.ALL)
 # === GLOBALS ===
 # One day I'll integrate this into a place that uses less memory. Today is not that day, and neither is tomorrow
 database = SQLManager()  # Database connection
-_VERSION = "0.1.1"  # MAJOR.MINOR.PATCH
+_VERSION = "0.1.2"  # MAJOR.MINOR.PATCH
 
 # === EVENTS ===
 
@@ -52,7 +52,8 @@ async def about(ctx: SlashContext):
                    f"Version {_VERSION}\n\n"
 
                    f"New features for {_VERSION}:\n"
-                   "Request a game with /request\n",
+                   "Request a game with /request\n"
+                   "Backend changes to SQL interaction\n",
                    ephemeral=True)
 
 
@@ -73,10 +74,11 @@ async def about(ctx: SlashContext):
     required=False,
     opt_type=OptionType.STRING,
     choices=[
-        SlashCommandChoice(name="PC", value="PC"),
+        # SlashCommandChoice(name="PC", value="PC"),  # Steam PC Cafe license needed first
         SlashCommandChoice(name="PlayStation", value="PlayStation"),
         SlashCommandChoice(name="Xbox", value="Xbox"),
-        SlashCommandChoice(name="Nintendo Switch", value="Nintendo Switch")
+        SlashCommandChoice(name="Nintendo Switch", value="Nintendo Switch"),
+        SlashCommandChoice(name="Equipment for Lab", value="Equipment")
     ]
 )
 async def request(ctx: SlashContext, game: str, platform: str = "N/A"):
@@ -157,7 +159,8 @@ async def admin_restart_connection(ctx: SlashContext):
     name="admin",
     description="Commands for the bot administrator",
     sub_cmd_name="say",
-    sub_cmd_description="Make the bot say something."
+    sub_cmd_description="Make the bot say something.",
+    scopes=[os.getenv("TEST_GUILD_ID")]
 )
 @slash_option(
     name="message",
@@ -244,8 +247,25 @@ async def status_set(ctx: SlashContext, status: str, activity_type: str = None, 
 @slash_command(
     name="admin",
     description="Commands for the bot administrator",
+    sub_cmd_name="resync_commands",
+    sub_cmd_description="Resyncs the slash commands. Use ONLY ONCE A DAY. 2 hours to propogate.",
+    scopes=[os.getenv("TEST_GUILD_ID")]
+)
+async def resync_commands(ctx: SlashContext):
+    if ctx.author_id == 456269883873951744:
+        bot.sync_interactions = False
+        bot.sync_interactions = True
+        await ctx.send("Resynced maybe.")
+    else:
+        await ctx.send("Beat it, chump.", ephemeral=True)
+
+
+@slash_command(
+    name="admin",
+    description="Commands for the bot administrator",
     sub_cmd_name="shutdown",
-    sub_cmd_description="Shuts down the bot."
+    sub_cmd_description="Shuts down the bot.",
+    scopes=[os.getenv("TEST_GUILD_ID")]
 )
 async def shutdown(ctx: SlashContext):
     if ctx.author_id == 456269883873951744:

@@ -8,7 +8,7 @@ def register(tree: app_commands.CommandTree, guild_id: int):
         """Print info about the bot"""
         
         message = """
-        This bot is created by the collabrative effor of NWMSU Students.
+        This bot is created by the collaborative effort of NWMSU Students.
         Check out the code at https://github.com/GameMagma/NWMSU-Bot.git
         
         Its purpose is to aid in the management of NWMSU esports' discord servers

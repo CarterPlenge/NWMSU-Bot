@@ -3,9 +3,6 @@ from discord import app_commands
 from dotenv import load_dotenv
 from commands import register_all
 
-from registeredCommands import register_commands
-
-
 load_dotenv()
 
 class DiscordBot:
@@ -30,7 +27,7 @@ class DiscordBot:
         async def on_message(message): # when a message is sent
             await self.handle_message(message)
             
-    async def handle_message(message):
+    async def handle_message(self, message):
         """
         Put functionality here if you want to do
         somthing on basic messages.

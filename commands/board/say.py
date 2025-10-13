@@ -1,4 +1,5 @@
 from discord import app_commands, Object, Interaction
+from permissions import require_any_role
 
 def register(tree: app_commands.CommandTree, guild_id: int):
     guild = Object(id=guild_id)
@@ -7,9 +8,9 @@ def register(tree: app_commands.CommandTree, guild_id: int):
     @app_commands.describe(
         text="text",
     )
+    @require_any_role("board", "admin")
     async def say(interaction: Interaction, text: str):
 
         await interaction.response.send_message(
-            text,
-            ephemeral=True
+            text
         )

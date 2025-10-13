@@ -1,13 +1,16 @@
-import os
-from dotenv import load_dotenv
+# import os
+# from dotenv import load_dotenv
 
-import json
-from pathlib import Path
+# import json
+# from pathlib import Path
 
-import discord
+# import discord
 
-from SQLManager import SQLManager
+# from SQLManager import SQLManager
 
-load_dotenv()
+# load_dotenv()
 
-from discordBot import D
+# from discordBot import D
+
+import this
+print(this)

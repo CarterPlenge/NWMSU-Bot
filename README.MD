@@ -38,3 +38,24 @@ most opensource projects will only accept your PR if it meets their coding stand
  - write somthing so people can test localy. we cant be giving out the bots admin creditinals. 
  - write unit test or somthing
  - be better
+
+ ## Project arcitectuer
+basic overview of where we put commands. check actual directory for all files
+```
+commands/
+├── user/           # commands in here should be callable for all users
+│   ├── gameRequest.py
+│   ├── about.py
+│   └── __init__.py # used to init commands in this folder
+├── board/           # commands in here should be callable for boad members
+│   ├── healthCheck.py
+│   ├── setStatus.py
+│   └── __init__.py 
+├── admin/           # commands in here should be callable for select few
+│   ├── shutdown.py
+│   └── __init__.py 
+main.py
+discordBot.py
+```
+
+when adding a new command remember to update the init file in its dirctory.

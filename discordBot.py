@@ -1,6 +1,7 @@
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
+from commands import register_all
 
 from registeredCommands import register_commands
 
@@ -21,7 +22,7 @@ class DiscordBot:
 
         @self.client.event
         async def on_ready(): # Print info once bot is ready
-            register_commands(self.tree, self.guild_id)
+            register_all(self.tree, self.guild_id)
             await self.tree.sync(guild=discord.Object(id=self.guild_id))
             print(f"Logged in as {self.client.user}")
 

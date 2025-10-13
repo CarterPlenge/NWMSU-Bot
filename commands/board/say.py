@@ -5,10 +5,10 @@ def register(tree: app_commands.CommandTree, guild_id: int):
     guild = Object(id=guild_id)
 
     @tree.command(name="say", description="Makes the bot say what you type", guild=guild)
+    @require_any_role("Board Member", "Esports Staff", "President", "Trusted bot contributor")
     @app_commands.describe(
         text="text",
     )
-    @require_any_role("board", "admin")
     async def say(interaction: Interaction, text: str):
 
         await interaction.response.send_message(

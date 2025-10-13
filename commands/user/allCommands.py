@@ -7,16 +7,9 @@ def register(tree: app_commands.CommandTree, guild_id: int):
     async def request(interaction: Interaction):
         """Print info about the bot"""
         
-        message = """This bot is created by the collaborative effort of NWMSU Students.
-        
-        --Check out the code and consider contributing at--
-            https://github.com/GameMagma/NWMSU-Bot.git
-        
-        Its purpose is to aid in the management of NWMSU esports' discord servers
-        Type "/allCommands" to see a full list of commands.
-        """
+        allcommands = ""
         
         await interaction.response.send_message(
-            message,
+            allcommands,
             ephemeral=True
         )

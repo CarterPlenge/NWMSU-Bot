@@ -1,4 +1,5 @@
 from discord import app_commands, Object, Interaction
+from channel import require_channel
 
 def register(tree: app_commands.CommandTree, guild_id: int):
     guild = Object(id=guild_id)
@@ -8,6 +9,7 @@ def register(tree: app_commands.CommandTree, guild_id: int):
         game="The game you want to request.",
         platform="The platform the game is on."
     )
+    @require_channel("game-requests")
     async def request(interaction: Interaction, game: str, platform: str = "N/A"):
         """Request a new game to be added to the esports library."""
 

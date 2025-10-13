@@ -38,6 +38,10 @@ class DiscordBot:
         self.client.run(token)
 
 if __name__ == "__main__":
+    import os
+    
+    TOKEN = os.getenv('DISCORD_TOKEN')
+    
     bobbyBearcat = DiscordBot()
-    bobbyBearcat.run(DISCORD_TOKEN)
+    bobbyBearcat.run(TOKEN)
             

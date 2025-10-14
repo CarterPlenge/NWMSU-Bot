@@ -6,7 +6,7 @@ from commands import register_all
 load_dotenv()
 
 class DiscordBot:
-    def __init__(self, guild_id):
+    def __init__(self, guild_id: int | None = None):
         intents = discord.Intents.default()
         self.client = discord.Client(intents=intents)
         self.tree = app_commands.CommandTree(self.client)
@@ -20,8 +20,14 @@ class DiscordBot:
         @self.client.event
         async def on_ready(): # Print info once bot is ready
             register_all(self.tree, self.guild_id)
-            await self.tree.sync(guild=discord.Object(id=self.guild_id))
-            print(f"Logged in as {self.client.user}")
+
+            if self.guild_id is not None:
+                await self.tree.sync(guild=discord.Object(id=self.guild_id))
+                print(f"Synced commands to guild {self.guild_id}")
+            else:
+                await self.tree.sync()
+                print("Synced commands globally")
+        print(f"Logged in as {self.client.user}")
 
         @self.client.event 
         async def on_message(message): # when a message is sent

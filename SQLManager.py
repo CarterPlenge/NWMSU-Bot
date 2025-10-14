@@ -1,106 +1,126 @@
-"""This module acts as the connection between the bot and the SQL management folder. Everything outside the directory
-should only interact with this module"""
-import interactions
-import mysql.connector
 
+"""
+
+
+NOTE: I SUCK AT SQL AND HAVE NO ACCESS TO THE DATABASE.
+I HAVE NO IDEA IF ANY OF THIS WORKS
+
+
+
+"""
+import mysql.connector
 import os
 from dotenv import load_dotenv
-
 from mysql.connector import MySQLConnection
+from typing import Optional, Tuple, Any, List
 
-from interactions import User
-from typing_extensions import deprecated
-
-load_dotenv()  # Loads the .env file
+load_dotenv()
 
 
 class SQLManager:
-    # cnx: MySQLConnection  # The connection used to connect to the database
-
-    # TODO: Keeping the connection open the entire time wastes resources, and doesn't work seeing as the connection
-    # TODO:     closes itself anyways. Instead, just have a method or class that opens a connection whenever we need it.
-
+    """Manages database connections and queries"""
+    
     def __init__(self):
-        # self._connection = SQLConnection()
-        print("Establishing connection to NWMSU Gaming database...")
-
-        return  # don't connect (DEBUG)
-
-        self.cnx = mysql.connector.connect(user=os.getenv("SQL_USER"), password=os.getenv("SQL_PASSWORD"),
-                                           host=os.getenv("SQL_HOST"), port=os.getenv("SQL_PORT"),
-                                           database=os.getenv("SQL_DATABASE"))
-        self.cursor = self.cnx.cursor(buffered=True)  # This is used to interact with the actual database
-        print("Connection Verified.\n\n")
-
-        disconnect()
-
-
-    def connect(self) -> None:
-        """
-        Establishes a connection to the database
-        :return: None
-        """
-        self.cnx = mysql.connector.connect(user=os.getenv("SQL_USER"), password=os.getenv("SQL_PASSWORD"),
-                                           host=os.getenv("SQL_HOST"), port=os.getenv("SQL_PORT"),
-                                           database=os.getenv("SQL_DATABASE"))
-        self.cursor = self.cnx.cursor(buffered=True)  # This is used to interact with the actual database
-        print("Connection Established.\n\n")
-
-
-    def disconnect(self) -> None:
-        """
-        Closes the connection to the database
-        :return: None
-        """
-
-        print("Closing DB Connection")
-        self.cursor.close()
-        self.cnx.close()
-        print("DB Connection Closed")
-
-    def is_closed(self) -> bool:
-        return self.cnx.is_connected()
-
-    #@deprecated
-    def updateUser(self, user: User):
-        """
-        Checks to see if a user has been added to the database yet.
-        :param user: user to check
-        :return: True if they exist, false otherwise
-        """
-        query_userTable = "SELECT * FROM `users` WHERE `userID` = %s"
-        self.cursor.execute(query_userTable, (int(user.id),))
-
-        result = self.cursor.fetchone()
-
+        """Initialize SQLManager; doesn't connect immediately"""
+        self.config = {
+            "user": os.getenv("SQL_USER"),
+            "password": os.getenv("SQL_PASSWORD"),
+            "host": os.getenv("SQL_HOST"),
+            "port": os.getenv("SQL_PORT"),
+            "database": os.getenv("SQL_DATABASE")
+        }
+        print("SQLManager initialized")
+    
+    def _get_connection(self) -> MySQLConnection:
+        """Establishes a new connection to the database"""
+        try:
+            cnx = mysql.connector.connect(**self.config)
+            return cnx
+        except mysql.connector.Error as err:
+            print(f"Database connection error: {err}")
+            raise
+    
+    def _execute_query(self, query: str, params: Tuple = None, fetch: str = None) -> Any:
+        """Execute a query and handle connection lifecycle"""
+        cnx = None
+        cursor = None
+        try:
+            cnx = self._get_connection()
+            cursor = cnx.cursor(buffered=True)
+            cursor.execute(query, params or ())
+            
+            if fetch == "one":
+                return cursor.fetchone()
+            elif fetch == "all":
+                return cursor.fetchall()
+            else:
+                cnx.commit()
+                return None
+                
+        except mysql.connector.Error as err:
+            print(f"Query execution error: {err}")
+            if cnx:
+                cnx.rollback()
+            raise
+        finally:
+            if cursor:
+                cursor.close()
+            if cnx and cnx.is_connected():
+                cnx.close()
+    
+    def update_user(self, user_id: int, username: str) -> None:
+        query_check = "SELECT * FROM `users` WHERE `userID` = %s"
+        result = self._execute_query(query_check, (user_id,), fetch="one")
+        
         if result is None:
-            query_createUser = "INSERT INTO `users`(`userID`, `nickname`) VALUES (%s,%s);"
-            self.cursor.execute(query_createUser, (int(user.id), str(user.username)))
-            # Default in the hard database will handle favors, no need to pass it in here
-            self.cnx.commit()
+            # User doesn't exist, create them
+            query_create = "INSERT INTO `users`(`userID`, `nickname`) VALUES (%s, %s);"
+            self._execute_query(query_create, (user_id, username))
+            print(f"Created new user: {username} (ID: {user_id})")
         else:
-            if str(result[1]) == str(user.username):
-                return
-            query_updateUser = "UPDATE users SET nickname = %s WHERE userID = %s"
-            self.cursor.execute(query_updateUser, (str(user.username), str(user.id)))
-            self.cnx.commit()
-
-    def test_connection(self):
-        query = "SELECT * FROM `game_request` WHERE 1"
-
-        self.connect()
-
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        print(result)
-
-        self.disconnect()
-
-
-    def close(self):
-        """Closes the connection"""
-
-        print("Closing Connection")
-        self.cursor.close()
-        self.cnx.close()
-        print("Connection Closed")
+            # User exists, check if username changed
+            if str(result[1]) != str(username):
+                query_update = "UPDATE users SET nickname = %s WHERE userID = %s"
+                self._execute_query(query_update, (username, user_id))
+                print(f"Updated user: {username} (ID: {user_id})")
+    
+    def get_wallet(self, user_id: int) -> Tuple[bool, str]:
+        """tf is a wallet?"""
+        try:
+            query = "SELECT * FROM `users` WHERE `userID` = %s"
+            result = self._execute_query(query, (user_id,), fetch="one")
+            
+            if result:
+                return (True, f"User wallet data: {result}")
+            else:
+                return (False, f"No wallet found for user ID: {user_id}")
+        except Exception as e:
+            return (False, f"Error fetching wallet: {str(e)}")
+    
+    def add_game_request(self, user_id: int, game: str, platform: str) -> Tuple[bool, str]:
+        """Add a new game request to the database"""
+        try:
+            query = "INSERT INTO `game_request`(`userID`, `game`, `platform`) VALUES (%s, %s, %s);"
+            self._execute_query(query, (user_id, game.lower().strip(), platform))
+            return (True, f"Game request added: {game} on {platform}")
+        except Exception as e:
+            return (False, f"Error adding game request: {str(e)}")
+    
+    def get_game_requests(self) -> Tuple[bool, List]:
+        """Retrieve all game requests from the database"""
+        try:
+            query = "SELECT * FROM `game_request`"
+            results = self._execute_query(query, fetch="all")
+            return (True, results or [])
+        except Exception as e:
+            return (False, str(e))
+    
+    def test_connection(self) -> bool:
+        try:
+            query = "SELECT 1"
+            self._execute_query(query)
+            print("Database connection test passed")
+            return True
+        except Exception as e:
+            print(f"Database connection test failed: {e}")
+            return False

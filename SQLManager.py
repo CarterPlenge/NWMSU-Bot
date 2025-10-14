@@ -41,7 +41,7 @@ class SQLManager:
             raise
     
     def _execute_query(self, query: str, params: Tuple = None, fetch: str = None) -> Any:
-        """Execute a query and handle connection lifecycle"""
+        """Execute a query and handle connection"""
         cnx = None
         cursor = None
         try:
@@ -68,39 +68,10 @@ class SQLManager:
             if cnx and cnx.is_connected():
                 cnx.close()
     
-    def update_user(self, user_id: int, username: str) -> None:
-        query_check = "SELECT * FROM `users` WHERE `userID` = %s"
-        result = self._execute_query(query_check, (user_id,), fetch="one")
-        
-        if result is None:
-            # User doesn't exist, create them
-            query_create = "INSERT INTO `users`(`userID`, `nickname`) VALUES (%s, %s);"
-            self._execute_query(query_create, (user_id, username))
-            print(f"Created new user: {username} (ID: {user_id})")
-        else:
-            # User exists, check if username changed
-            if str(result[1]) != str(username):
-                query_update = "UPDATE users SET nickname = %s WHERE userID = %s"
-                self._execute_query(query_update, (username, user_id))
-                print(f"Updated user: {username} (ID: {user_id})")
-    
-    def get_wallet(self, user_id: int) -> Tuple[bool, str]:
-        """tf is a wallet?"""
-        try:
-            query = "SELECT * FROM `users` WHERE `userID` = %s"
-            result = self._execute_query(query, (user_id,), fetch="one")
-            
-            if result:
-                return (True, f"User wallet data: {result}")
-            else:
-                return (False, f"No wallet found for user ID: {user_id}")
-        except Exception as e:
-            return (False, f"Error fetching wallet: {str(e)}")
-    
     def add_game_request(self, user_id: int, game: str, platform: str) -> Tuple[bool, str]:
         """Add a new game request to the database"""
         try:
-            query = "INSERT INTO `game_request`(`userID`, `game`, `platform`) VALUES (%s, %s, %s);"
+            query = "INSERT INTO `game_request`(`username`, `game`, `platform`) VALUES (%s, %s, %s);"
             self._execute_query(query, (user_id, game.lower().strip(), platform))
             return (True, f"Game request added: {game} on {platform}")
         except Exception as e:

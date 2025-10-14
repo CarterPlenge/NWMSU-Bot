@@ -1,5 +1,8 @@
 from discord import app_commands, Object, Interaction
 from permissions import require_any_role
+from SQLManager import SQLManager
+
+database = SQLManager()
 
 def register(tree: app_commands.CommandTree, guild_id: int):
     guild = Object(id=guild_id)
@@ -8,10 +11,15 @@ def register(tree: app_commands.CommandTree, guild_id: int):
     @require_any_role("Board Member", "Esports Staff", "President", "Trusted bot contributor")
     async def healthCheck(interaction: Interaction):
         # TODO: handle health check
-        serverHealth = "good"
-        databaseHealth = "good"
+        success = database.test_connection()
         
-        await interaction.response.send_message(
-            f"Sever health {serverHealth}\n Database health {databaseHealth}",
-            ephemeral=True
-        )
+        if success:
+            await interaction.response.send_message(
+                "Database connection is healthy",
+                ephemeral=True
+            )
+        else:
+            await interaction.response.send_message(
+                f"Database connection failed",
+                ephemeral=True
+            )

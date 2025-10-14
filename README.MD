@@ -37,8 +37,6 @@ most opensource projects will only accept your PR if it meets their coding stand
 ## TODO
  - write somthing so people can test localy. we cant be giving out the bots admin creditinals. 
  - write unit test or somthing
- - be better
- - SQL stuff
  - Error handling
 
  ## Project arcitectuer

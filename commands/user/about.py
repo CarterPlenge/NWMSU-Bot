@@ -4,7 +4,7 @@ def register(tree: app_commands.CommandTree, guild_id: int):
     guild = Object(id=guild_id)
 
     @tree.command(name="about", description="About this bot", guild=guild)
-    async def request(interaction: Interaction):
+    async def about(interaction: Interaction):
         """Print info about the bot"""
         
         message = """This bot is created by the collaborative effort of NWMSU Students.

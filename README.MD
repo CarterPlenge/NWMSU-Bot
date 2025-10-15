@@ -12,16 +12,15 @@ or atleast thats what this should be. its not much right now.
 ### Commands
 
 #### Regular access
- - about: prints purpouse/functionality.
- - ping: server health check.
- - request: request a new game.
- - dbtest: database health check.
+ - about: prints info about the bot
+ - allCommands: prints a list of all commands
+ - gameRequest: request a game to be added to the esport lab.
+#### Boardmember access
+ - healthCheck: make sure the database is connected
+ - say: makes the bot say what you typed
 #### admin access
- - admin_close_connection: closes db connection.
- - admin_restart_connection: reset db connection.
- - admin_say: send a message using the bot account.
- - status_set: change bots status.
- - resync_commands: idk what this does.
+ - databaseQuery: used to retrive infromation from the database.
+ - status: change bots status.
  - shutdown: shuts the bot down.
 
 ## Contributing and updating
@@ -40,7 +39,7 @@ most opensource projects will only accept your PR if it meets their coding stand
  - Error handling
 
  ## Project arcitectuer
-basic overview of where we put commands. check actual directory for all files
+basic overview of where we put commands. check actual directory for all files as this is just an example
 ```
 commands/
 ├── user/           # commands in here should be callable for all users

@@ -19,7 +19,6 @@ load_dotenv()
 
 class SQLManager:
     """Manages database connections and queries"""
-    
     def __init__(self):
         """Initialize SQLManager; doesn't connect immediately"""
         self.config = {

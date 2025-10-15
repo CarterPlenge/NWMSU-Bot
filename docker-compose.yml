@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  bot:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - SQL_USER=botuser
+      - SQL_PASSWORD=botpass
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - SQL_DATABASE=botdb
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: botuser
+      POSTGRES_PASSWORD: botpass
+      POSTGRES_DB: botdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

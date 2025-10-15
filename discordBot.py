@@ -6,10 +6,11 @@ from commands import register_all
 load_dotenv()
 
 class DiscordBot:
-    def __init__(self, guild_id: int | None = None):
+    def __init__(self, database, guild_id: int | None = None):
         intents = discord.Intents.default()
         self.client = discord.Client(intents=intents)
         self.tree = app_commands.CommandTree(self.client)
+        self.database = database
         self.guild_id = guild_id    # guild id == server id; leave as None to omit this
         
         self._setup_events()

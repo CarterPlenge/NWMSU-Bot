@@ -1,10 +1,8 @@
 from discord import app_commands, Object, Interaction
 from permissions import require_any_role
-from SQLManager import SQLManager
 
-database = SQLManager()
 
-def register(tree, guild_id):
+def register(tree, database, guild_id):
     guild = Object(id=guild_id)
 
     @tree.command(name="databaseQuery", description="Query the database for information", guild=guild)

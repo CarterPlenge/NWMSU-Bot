@@ -4,7 +4,7 @@ from SQLManager import SQLManager
 
 database = SQLManager()
 
-def register(tree: app_commands.CommandTree, guild_id: int):
+def register(tree: app_commands.CommandTree, database, guild_id: int):
     guild = Object(id=guild_id)
 
     @tree.command(name="request", description="Request a new game", guild=guild)

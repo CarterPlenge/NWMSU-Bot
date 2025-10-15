@@ -19,8 +19,10 @@ class DiscordBot:
         """Sets up event handlers"""
 
         @self.client.event
-        async def on_ready(): # Print info once bot is ready
-            register_all(self.tree, self.guild_id)
+        async def on_ready():
+            print(f"Logged in as {self.client.user}")
+            
+            register_all(self.tree, self.database, self.guild_id)
 
             if self.guild_id is not None:
                 await self.tree.sync(guild=discord.Object(id=self.guild_id))
@@ -28,7 +30,7 @@ class DiscordBot:
             else:
                 await self.tree.sync()
                 print("Synced commands globally")
-        print(f"Logged in as {self.client.user}")
+        
 
         @self.client.event 
         async def on_message(message): # when a message is sent

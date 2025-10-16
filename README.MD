@@ -12,14 +12,14 @@ or atleast thats what this should be. its not much right now.
 ### Commands
 
 #### Regular access
- - about: prints info about the bot
- - gameRequest: request a game to be added to the esport lab.
+ - ```/about``` prints info about the bot
+ - ```/gameRequest``` request a game to be added to the esport lab.
 #### Boardmember access
- - healthCheck: make sure the database is connected
- - say: makes the bot say what you typed
+ - ```/healthCheck``` make sure the database is connected
+ - ```/say``` makes the bot say what you typed
 #### admin access
- - databaseQuery: used to retrive infromation from the database.
- - status: change bots status.
+ - ```/databaseQuery``` used to retrive infromation from the database.
+ - ```status``` change bots status.
 
 ## Contributing and updating
 
@@ -29,7 +29,7 @@ or atleast thats what this should be. its not much right now.
  - ask for aproval to impliment your own unique features as they may not be welcome. (ie: a PR to send "hello world" every 5 seconds is not getting added.)
 
 ### Code formating rules
-most opensource projects will only accept your PR if it meets their coding standards. However this project doesnt have a lot of steam at the moment so it will mostly be laissez faire. Just use decent names and comments so others can read it. if you name all your variables after fictional characters your PR might get denied. or maybe it wont. who knows.
+Most opensource projects will only accept your PR if it meets their coding standards. However this project doesnt have a lot of steam at the moment so it will mostly be laissez faire. Just use decent names and comments so others can read it. if you name all your variables after fictional characters your PR might get denied. or maybe it wont. who knows.
 
 ### Getting started
 #### Getting the project locally
@@ -92,7 +92,7 @@ use ```docker compose down``` to stop containers
 You should have a working local clone of the project now
 
 #### Project arcitectuer
-basic overview of where we put commands. check actual directory for all files as this is just an example and my be out of date. Check ```docs/``` for more information
+basic overview of where we put commands and what files do what. check actual directory for all files as this is just a static overview and my be out of date. Check ```docs/``` for more information
 ```
 commands/           # holds all commands
 ├── user/           # commands in here should be callable for all users

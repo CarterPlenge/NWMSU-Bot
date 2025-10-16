@@ -1,5 +1,6 @@
 from discord import app_commands, Object, Interaction
 from permissions import require_any_role
+from datetime import datetime
 
 def register(tree, database, guild_id):
     guild = Object(id=guild_id) if guild_id else None
@@ -18,15 +19,41 @@ def register(tree, database, guild_id):
         try:
             if databasequery == "gameRequest":
                 status, response = database.get_game_requests()
-                if not(status):
-                    raise response
-            
-            await interaction.response.send_message(
-                f"""```{response}```"""
-            )
+                if not status:
+                    raise Exception(response)
+                
+                if not response:
+                    await interaction.response.send_message(
+                        "No game requests found.", ephemeral=True
+                    )
+                    return
+
+                formatted = []
+                for row in response:
+                    created_at = row["created_at"]
+
+                    # Convert datetime to readable form without seconds
+                    if isinstance(created_at, datetime):
+                        created_str = created_at.strftime("%Y-%m-%d %H:%M")
+                    else:
+                        created_str = str(created_at)[:16]  # fallback if it's a string
+
+                    formatted.append(
+                        f"Game: {row['game']} | on: {row['platform']} | UserID: {row['username']} | Time: {created_str}"
+                    )
+
+
+
+                output = "\n".join(formatted)
+
+                # Prevent messages > 2000 characters; discord enforces this
+                if len(output) > 1900:
+                    output = output[:1900] + "\n... (truncated)"
+
+                await interaction.response.send_message(f"```{output}```")
 
         except Exception as e:
             await interaction.response.send_message(
-                f"An unexpected error has occured: {str(e)}", 
+                f"An unexpected error occurred: {str(e)}",
                 ephemeral=True
             )

@@ -45,15 +45,13 @@ def register(tree: app_commands.CommandTree, database, guild_id: int):
         }
         
         try:
-            # build the activity if provided
             activity_obj = None
             if activity_type and activity:
                 activity_obj = Activity(
                     name=activity,
                     type=activity_type_map.get(activity_type, ActivityType.playing)
                 )
-            
-            # change status
+
             await interaction.client.change_presence(
                 status=status_map.get(status, Status.online),
                 activity=activity_obj

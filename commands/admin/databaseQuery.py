@@ -32,11 +32,7 @@ def register(tree, database, guild_id):
                 for row in response:
                     created_at = row["created_at"]
 
-                    # Convert datetime to readable form without seconds
-                    if isinstance(created_at, datetime):
-                        created_str = created_at.strftime("%Y-%m-%d %H:%M")
-                    else:
-                        created_str = str(created_at)[:16]  # fallback if it's a string
+                    created_str = created_at.strftime("%Y-%m-%d %H:%M")
 
                     formatted.append(
                         f"Game: {row['game']} | on: {row['platform']} | UserID: {row['username']} | Time: {created_str}"

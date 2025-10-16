@@ -13,7 +13,6 @@ or atleast thats what this should be. its not much right now.
 
 #### Regular access
  - about: prints info about the bot
- - allCommands: prints a list of all commands
  - gameRequest: request a game to be added to the esport lab.
 #### Boardmember access
  - healthCheck: make sure the database is connected
@@ -21,27 +20,81 @@ or atleast thats what this should be. its not much right now.
 #### admin access
  - databaseQuery: used to retrive infromation from the database.
  - status: change bots status.
- - shutdown: shuts the bot down.
 
 ## Contributing and updating
 
 ### What to contribute
  - Check PR (Pull requests) for issues/bugs/feature request
- - if there are none consider asking the esport organizers if they need anything
+ - if there are none consider asking the esport organizer if they need anything
  - ask for aproval to impliment your own unique features as they may not be welcome. (ie: a PR to send "hello world" every 5 seconds is not getting added.)
 
 ### Code formating rules
-most opensource projects will only accept your PR if it meets their coding standards. However this project doesnt have a lot of steam at the moment so it will mostly be laissez faire. Just use decent names and comments so others can read it. if you name all your variables after fictional characters your PR might get denied.
+most opensource projects will only accept your PR if it meets their coding standards. However this project doesnt have a lot of steam at the moment so it will mostly be laissez faire. Just use decent names and comments so others can read it. if you name all your variables after fictional characters your PR might get denied. or maybe it wont. who knows.
 
-## TODO
- - write somthing so people can test localy. we cant be giving out the bots admin creditinals. 
- - write unit test or somthing
- - Error handling
+### Getting started
+#### Getting the project locally
+software needed:
+ - docker           to run the bot and db
+ - git              to clone from github
+software recommended:
+ - python           if you want to run code outside of docker
+ - preferred IDE    if you dont want to edit everything in a text editor
 
- ## Project arcitectuer
-basic overview of where we put commands. check actual directory for all files as this is just an example
+Step 1: Clone the repo
+remember to cd to your desired directory 
 ```
-commands/
+git clone https://github.com/GameMagma/NWMSU-Bot.git
+cd NWMSU-Bot
+```
+
+Optional Step: creating a virtual enviroment
+```
+# if you want to run code localy i would recommend using a venv
+python -m venv env
+pip install -r requirements.txt
+
+# if psycopg2-binary==2.9.11 fails
+# run "pip install psycopg2" instead
+```
+
+Step 2: setting up .env
+use .envExample to create your .env
+command to do so
+```cp .envExample .env```
+
+```
+# you will need to create your own discord bot as sharing is a security risk
+# you will also need a discord server where you can test it out
+DISCORD_TOKEN= # put your discord bots token here
+GUILD_ID=   # put the guild_id of the server here
+
+
+SQL_USER= testing        # create whatever username you want
+SQL_PASSWORD= 1234       # create whatever password you want
+
+SQL_HOST= postgres       # leave as is, match docker
+SQL_PORT= 5432           # the port you want it to run on (5432 by default)
+SQL_DATABASE= dbtest     # name it whatever you want          
+```
+
+Step 3: Starting containers
+```
+# make sure you have docker running
+
+# build the services
+docker compose build
+
+# start the containers
+docker compose up -d # -d runs it detached 
+```
+use ```docker compose down``` to stop containers
+
+You should have a working local clone of the project now
+
+#### Project arcitectuer
+basic overview of where we put commands. check actual directory for all files as this is just an example and my be out of date. Check ```docs/``` for more information
+```
+commands/           # holds all commands
 ├── user/           # commands in here should be callable for all users
 │   ├── gameRequest.py
 │   ├── about.py
@@ -53,8 +106,25 @@ commands/
 ├── admin/           # commands in here should be callable for select few
 │   ├── shutdown.py
 │   └── __init__.py 
+docs/               # holds additional documentation
+
+.dockerignore       # tells docker what to ignore (not copy)
+.envEXAMPLE         # .env creation reference
+.gitignore          # tells git what to ignore
+requirements.txt    # keeps all required external libraries needed to run this project
+
+channel.py          # holds logic for locking commands to channels
+clearCommands.py    # purges all commands; debugging script; will probably be removed
+SQLManager          # holds logic for database operations
+discordBot.py       # defines class discordBot which interacts with discord
+
+docker-compose.yml  # tells docker how to build the project
+Dockerfile          # tells docker how to build a container
+init.sql            # inital templet for database initialization
+
 main.py
-discordBot.py
 ```
 
-when adding a new command remember to update the init file in its dirctory.
+## TODO
+ - write unit test or somthing
+ - Error handling

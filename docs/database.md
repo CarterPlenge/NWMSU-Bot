@@ -5,7 +5,7 @@ This volume persist across container restarts and prevents re-running init.sql
 
 init.sql is mounted into the Docker volume on its first creation to create the database
 
-To remove the volume (and delete the database) use '''docker compose down -v'''
+To remove the volume (and delete the database) use '''docker-compose down -v'''
 
 ## how to create a new table
 ### Add it to init.sql
@@ -17,7 +17,7 @@ since init.sql is only ran when a container is created for the first time we wil
 to manual create new tables.
 
 first we have to connect to the db
-```docker compose exec postgres psql -U botuser -d discord_bot```
+```docker-compose exec postgres psql -U botuser -d discord_bot```
 
 Then we create the table manualy
 ```

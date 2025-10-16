@@ -1,4 +1,10 @@
-"""In the event you fuck up the commands by using a guild_id and global. use this to fix it"""
+"""
+
+In the event the commands are fucked up use this to purge them all.
+I think i got the issue fixed but imma leave this here just in case. 
+
+"""
+
 
 import discord
 from discord import app_commands

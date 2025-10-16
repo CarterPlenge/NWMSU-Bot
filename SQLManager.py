@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from psycopg2 import OperationalError
+from psycopg2 import OperationalError, pool
 from psycopg2.extras import RealDictCursor
 from typing import Optional, Tuple, Any, List
 from dotenv import load_dotenv

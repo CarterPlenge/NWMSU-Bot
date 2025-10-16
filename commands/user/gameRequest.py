@@ -12,13 +12,27 @@ def register(tree: app_commands.CommandTree, database, guild_id: int):
         game="The game you want to request.",
         platform="The platform the game is on."
     )
+    @app_commands.choices(
+        platform=[
+            app_commands.Choice(name="PC (work in progress)", value="PC"),
+            app_commands.Choice(name="Xbox", value="Xbox"),
+            app_commands.Choice(name="Playstation", value="Playstation"),
+            app_commands.Choice(name="Switch", value="Switch")
+        ]
+    )
     @require_channel("game-requests")
-    async def request(interaction: Interaction, game: str, platform: str = "N/A"):
-        success, message = database.add_game_request(interaction.user.id, game, platform)
+    async def request(interaction: Interaction, game: str, platform: app_commands.Choice[str]):
+        platform_value = platform.value if isinstance(platform, app_commands.Choice) else platform
+        
+        success, message = database.add_game_request(interaction.user.id, game, platform_value)
         
         if success:
+            response = ""
+            if platform_value == "PC":
+                response = "\n\nWe are still in the process of getting our steam PC Cafe liceses. Ask the esport director for more info."
+            
             await interaction.response.send_message(
-                f"Your request for **{game}** on **{platform}** has been received.",
+                f"Your request for **{game}** on **{platform_value}** has been received.{response}",
                 ephemeral=True
             )
         else:

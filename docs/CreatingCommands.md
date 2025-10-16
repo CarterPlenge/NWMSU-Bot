@@ -5,27 +5,27 @@ commands/
 │   ├── gameRequest.py
 │   ├── about.py
 │   └── __init__.py
-├── board/           # commands in here should be callable for boad members
+├── board/           # commands in here should be callable for board members
 │   ├── healthCheck.py
 │   ├── setStatus.py
 │   └── __init__.py 
-├── admin/           # commands in here should be callable for select few
+├── admin/           # commands in here should be callable for the select few
 │   ├── shutdown.py
 │   └── __init__.py 
 ```
-This project is structured to read in commands from individual python files.
+This project is structured to read in commands from individual Python files.
 
 the **__init__.py** files are used to load in all the commands.
-This means to create a new command we just need to create a new python file where we want it.
+This means to create a new command, we just need to create a new Python file where we want it.
 
-Note: there is no logic built into locking commands based on their directory. You must specify 
+Note: There is no logic built into locking commands based on their directory. You must specify 
 who is allowed to call the command in the command file. Please put your command in the appropriate
-directory for organization purpouses. 
+directory for organizational purposes. 
 
-## Writing a command walkthough
-```
+## Writing a command walkthrough
+```python
 #
-# To start we need to bring in the packages we will be using
+# To start, we need to bring in the packages we will be using
 #
 from discord import app_commands, Object, Interaction
 from permissions import require_any_role
@@ -49,11 +49,11 @@ def register(tree, database, guild_id):
     @tree.command(name="add", description="adds two numbers together", guild=guild)
 
     # This will lock the command to only work if someone has a specific role
-    # ommiting this will result in it being callable by anyone. (like the about command)
+    # Omitting this will result in it being callable by anyone. (like the about command)
     @require_any_role("Esports Staff", "President", "Trusted bot contributor")
 
-    # Here we will describe parameters and give them a discription
-    # omiting this will result in a command with no params (like the about command)
+    # Here we will describe parameters and give them a description
+    # Omitting this will result in a command with no params (like the about command)
     @app_commands.describe(
         num1="first number",
         num2="second number"
@@ -61,7 +61,7 @@ def register(tree, database, guild_id):
 
     # We can lock parameters to use only set values using this
     # check out admin/status.py and gameRequest.py for more examples.
-    # here i will only lock param num2 to set choices
+    # here I will only lock param num2 to set choices
     @app_commands.choices(
         num2=[
             app_commands.Choice(name="one", value=1),
@@ -74,7 +74,7 @@ def register(tree, database, guild_id):
     # Here is where we will define our command functionality
     #
 
-    # function name doesnt technicly matter but try to match command name
+    # function name doesn't technically matter, but try to match command name
     async def command_add(interaction: Interaction, num1: str, num2: app_commands.Choice[str]):
         
         # trade Choice name for choice value

@@ -1,11 +1,11 @@
 from discord import app_commands, Object, Interaction, ActivityType, Activity, Status
-from permissions import require_role
+from permissions import require_any_role
 
 def register(tree: app_commands.CommandTree, database, guild_id: int):
     guild = Object(id=guild_id) if guild_id else None
 
     @tree.command(name="status", description="Set the bot status and activity", guild=guild)
-    @require_role("admin")
+    @require_any_role("Esports Staff", "President", "Trusted bot contributor")
     @app_commands.describe(
         status="The status to set (online, idle, dnd, invisible)",
         activity_type="The type of activity (playing, streaming, listening, watching, competing)",

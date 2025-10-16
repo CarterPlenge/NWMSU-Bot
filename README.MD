@@ -42,13 +42,13 @@ Software recommended:
 
 Step 1: Clone the repo
 Remember to cd to your desired directory 
-```
+```cmd
 git clone https://github.com/GameMagma/NWMSU-Bot.git
 cd NWMSU-Bot
 ```
 
 Optional Step: Creating a virtual environment
-```
+```cmd
 # if you want to run code locally, I would recommend using a venv
 python -m venv env
 pip install -r requirements.txt
@@ -60,7 +60,9 @@ pip install -r requirements.txt
 Step 2: Setting up .env
 Use .envExample to create your .env
 command to do so
-```cp .envExample .env```
+```cmd
+cp .envExample .env
+```
 
 ```
 # You will need to create your own Discord bot, as sharing is a security risk
@@ -78,7 +80,7 @@ SQL_DATABASE= dbtest     # name it whatever you want
 ```
 
 Step 3: Starting containers
-```
+```cmd
 # make sure you have Docker running
 
 # build the services
@@ -126,5 +128,5 @@ main.py
 ```
 
 ## TODO
- - write unit test or somthing
+ - write unit test or something
  - Error handling

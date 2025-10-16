@@ -1,7 +1,6 @@
 DISCORD_TOKEN= bot_token
 
-TEST_DISCORD_TOKEN= test_bot_token
-TEST_GUILD_ID= 0
+GUILD_ID= guild_id
 
 SQL_USER= username
 SQL_PASSWORD= password

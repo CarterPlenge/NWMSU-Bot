@@ -1,11 +1,11 @@
 from discord import app_commands, Object, Interaction
-from utils.commands import get_all_commands
+from ..utils.commands import get_all_commands
 
 def register(tree: app_commands.CommandTree, database, guild_id: int):
-    guild = Object(id=guild_id)
+    guild = Object(id=guild_id) if guild_id else None
 
-    @tree.command(name="allCommands", description="List all available commands", guild=guild)
-    async def allCommands(interaction: Interaction):
+    @tree.command(name="all-commands", description="List all available commands", guild=guild)
+    async def all_commands(interaction: Interaction):
         commands_text = get_all_commands(tree)
         
         message = f"""

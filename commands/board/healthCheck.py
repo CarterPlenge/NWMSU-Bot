@@ -2,11 +2,11 @@ from discord import app_commands, Object, Interaction
 from permissions import require_any_role
 
 def register(tree: app_commands.CommandTree, database, guild_id: int):
-    guild = Object(id=guild_id)
+    guild = Object(id=guild_id) if guild_id else None
 
-    @tree.command(name="healthCheck", description="Check bot and db health ", guild=guild)
+    @tree.command(name="health-check", description="Check bot and db health ", guild=guild)
     @require_any_role("Board Member", "Esports Staff", "President", "Trusted bot contributor")
-    async def healthCheck(interaction: Interaction):
+    async def health_check(interaction: Interaction):
         success = database.test_connection()
         
         if success:

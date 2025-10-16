@@ -2,7 +2,7 @@ from discord import app_commands, Object, Interaction
 from permissions import require_any_role
 
 def register(tree, database, guild_id):
-    guild = Object(id=guild_id)
+    guild = Object(id=guild_id) if guild_id else None
 
     @tree.command(name="shutdown", description="Shut down the bot", guild=guild)
     @require_any_role("Esports Staff", "President", "Trusted bot contributor")

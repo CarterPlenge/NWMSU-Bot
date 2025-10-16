@@ -2,7 +2,7 @@ from discord import app_commands, Object, Interaction, ActivityType, Activity, S
 from permissions import require_role
 
 def register(tree: app_commands.CommandTree, database, guild_id: int):
-    guild = Object(id=guild_id)
+    guild = Object(id=guild_id) if guild_id else None
 
     @tree.command(name="status", description="Set the bot status and activity", guild=guild)
     @require_role("admin")

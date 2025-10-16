@@ -22,6 +22,9 @@ class DiscordBot:
         async def on_ready():
             print(f"Logged in as {self.client.user}")
             
+            self.tree.clear_commands(guild=None)
+            self.tree.clear_commands(guild=discord.Object(id=self.guild_id))
+            
             register_all(self.tree, self.database, self.guild_id)
 
             if self.guild_id is not None:
@@ -48,9 +51,12 @@ class DiscordBot:
 
 if __name__ == "__main__":
     import os
+    from SQLManager import SQLManager
+    db = SQLManager(min_conn=2, max_conn=10)
     
     TOKEN = os.getenv('DISCORD_TOKEN')
+    GUILD_ID = int(os.getenv('GUILD_ID')) if os.getenv('GUILD_ID') else None
     
-    bobbyBearcat = DiscordBot()
+    bobbyBearcat = DiscordBot(db, GUILD_ID)
     bobbyBearcat.run(TOKEN)
             

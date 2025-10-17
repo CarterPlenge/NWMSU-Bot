@@ -19,7 +19,7 @@ Or at least that's what this should be. It's not much right now.
  - ```/say``` makes the bot say what you typed
 #### admin access
  - ```/databaseQuery``` used to retrieve information from the database.
- - ```status``` change bots status.
+ - ```/status``` change bots status.
 
 ## Contributing and updating
 
